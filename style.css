@@ -17,5 +17,13 @@
 }
 
 .ship{
+    background-color: green;
+}
+
+.bullet{
+    background-color: orange;
+}
+
+.collision{
     background-color: red;
 }
