@@ -1,6 +1,6 @@
 const grid = document.querySelector('.grid');
-const  StartShipPosition = 524;
-let currentShipPosition=StartShipPosition;
+const StartShipPosition = 524;
+let currentShipPosition = StartShipPosition;
 const width = 30;
 let invadersId;
 let result = document.querySelector('.results');
@@ -11,39 +11,40 @@ let level = 1;
 let bullets = [];
 let game = false, gameOver = false;
 let highScores = new Array(10);
+let pause=false;
 
-highScores.fill(0,0);
+highScores.fill(0, 0);
 
 let td;
 let table = document.querySelector('.scores');
 
-const createNode = (node, parent)=>{
+const createNode = (node, parent) => {
     let n = document.createElement(node);
     parent.appendChild(n);
     return n;
 }
 
-const createHighScores = ()=>{
-    for(let i=0;i<highScores.length;i++){
+const createHighScores = () => {
+    for (let i = 0; i < highScores.length; i++) {
         tr = createNode('tr', table);
         td = createNode('td', tr);
-        td.textContent=i+1+".  "+highScores[i];
-        td.classList.add('score'+i)
+        td.textContent = i + 1 + ".  " + highScores[i];
+        td.classList.add('score' + i)
     }
 }
 
 createHighScores();
 
-const fillHighScores = ()=>{
+const fillHighScores = () => {
     for (let i = 0; i < highScores.length; i++) {
-        td=document.querySelector('.score'+i);
+        td = document.querySelector('.score' + i);
         console.log(td);
-        td.textContent=i+1+".  "+highScores[i];   
+        td.textContent = i + 1 + ".  " + highScores[i];
         console.log(td.textContent);
 
     }
 }
-const createElement = (element)=>{
+const createElement = (element) => {
     document.createElement(element);
 }
 
@@ -64,15 +65,16 @@ let alienInvaders = [
     10, 11, 12, 13, 14, 15
 ];
 
-const ship=[
+const ship = [
     0,
-    29,30,31
+    29, 30, 31
 ]
 
 const squares = Array.from(document.querySelectorAll('.grid div'));
 
 const startGame = (e) => {
     if (e.key) game = true;
+    console.log(game);
 }
 
 document.addEventListener('keydown', startGame)
@@ -92,15 +94,15 @@ const clearInvaders = () => {
 
 }
 
-const drawShip = ()=>{
+const drawShip = () => {
     ship.forEach(element => {
-        addClass(element+currentShipPosition,'ship');
+        addClass(element + currentShipPosition, 'ship');
     });
 }
 
-const clearShip = ()=>{
+const clearShip = () => {
     ship.forEach(element => {
-        removeClass(element+currentShipPosition,'ship');
+        removeClass(element + currentShipPosition, 'ship');
     });
 }
 
@@ -113,13 +115,13 @@ const moveShip = (e) => {
         clearShip()
         switch (e.key) {
             case 'ArrowLeft':
-                if ((currentShipPosition-1) % width != 0) currentShipPosition--;
+                if ((currentShipPosition - 1) % width != 0) currentShipPosition--;
                 break;
             case 'ArrowRight':
-                if ((currentShipPosition+1) % width < width - 1) currentShipPosition++;
+                if ((currentShipPosition + 1) % width < width - 1) currentShipPosition++;
                 break;
         }
-        drawShip()  
+        drawShip()
     }
 }
 
@@ -128,38 +130,42 @@ document.addEventListener('keydown', moveShip);
 const moveInvaders = () => {
     const left = alienInvaders[0] % width === 0
     const right = alienInvaders[alienInvaders.length - 1] % width === width - 1
-    clearInvaders();
 
     if (game) {
+        clearInvaders();
+
+
         for (let i = 0; i < alienInvaders.length; i++) {
             alienInvaders[i] += width;
         }
-    }
 
-    drawInvaders();
 
-    ship.forEach(element => {
-        if (squares[currentShipPosition+element].classList.contains('invader', 'ship')) {      
-            restartGame();
+        drawInvaders();
+
+        ship.forEach(element => {
+            if (squares[currentShipPosition + element].classList.contains('invader', 'ship')) {
+                restartGame();
+            }
+        });
+
+        for (let i = 0; i < alienInvaders.length; i++) {
+            if (alienInvaders[i] >= squares.length - width) {
+                console.log(alienInvaders[i]);
+                restartGame();
+            }
         }
-    });
-    
-    for (let i = 0; i < alienInvaders.length; i++) {
-        if (alienInvaders[i] >= squares.length - width) {
-            restartGame();
-        }
-    }
 
-    if (aliensClear.length == alienInvaders.length) {
-        level++
-        gameOver=true;
-        clearInterval(invadersId)
-        nextRound()
+        if (aliensClear.length == alienInvaders.length) {
+            level++
+            gameOver = true;
+            clearInterval(invadersId)
+            nextRound()
+        }
     }
 
 }
 
-invadersId = setInterval(moveInvaders, /*1000 - (100 * (level - 1))*/200);
+invadersId = setInterval(moveInvaders, /*1000 - (100 * (level - 1))*/ 200);
 
 const shoot = (e) => {
     let bulletId;
@@ -230,39 +236,54 @@ const nextRound = () => {
     clearBullets();
     drawInvaders();
     game = false;
-    gameOver=false;
+    gameOver = false;
     invadersId = setInterval(moveInvaders, 1000 - (100 * (level - 1)));
 }
 
 
-const restartGame = ()=>{
+const restartGame = () => {
     result.innerHTML = 'game over';
-    clearInterval(invadersId);
     gameOver = true;
 
     highScores.unshift(score);
-    highScores.sort((a,b)=>b-a);
+    highScores.sort((a, b) => b - a);
     highScores.pop();
 
     fillHighScores();
- 
-    aliensClear = [];
-    clearInvaders();
-    alienInvaders = [
-        10, 11, 12, 13, 14, 15
-    ];
-    drawInvaders();
+    pause=true;
 
-    clearBullets();
+    clearInterval(invadersId);
 
-    clearShip();
-    currentShipPosition=524;
-    drawShip();
+    const restart = (e) => {
+        if (e.key&&pause) {
+            aliensClear = [];
+            clearInvaders();
+            alienInvaders = [
+                10, 11, 12, 13, 14, 15
+            ];
 
-    game=false;
-    gameOver=false;
-    level=1;
-    score=0;
+            drawInvaders();
+
+            clearBullets();
+
+            clearShip();
+            currentShipPosition = 524;
+            drawShip();
+
+            game=false;
+            console.log("1");   
+
+            pause=false;
+
+        }
+    }
+
+    document.addEventListener('keydown', restart)
+
+    game = false;
+    gameOver = false;
+    level = 1;
+    score = 0;
 
     invadersId = setInterval(moveInvaders, 1000 - (100 * (level - 1)));
 
