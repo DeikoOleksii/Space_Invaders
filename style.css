@@ -11,6 +11,18 @@
     height:20px;
 }
 
+.scores{
+    position:absolute;
+    left:700px;
+    top: 74px;
+}
+
+.h{
+    position: absolute;
+    left: 700px;
+    top:0;
+}
+
 .invader{
     background-color: blue;
     border-radius: 10px;

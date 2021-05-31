@@ -1,9 +1,8 @@
 const grid = document.querySelector('.grid');
-let currentShipPosition = 524;
-let width = 30;
-let direction = 1;
+const  StartShipPosition = 524;
+let currentShipPosition=StartShipPosition;
+const width = 30;
 let invadersId;
-let moveRight = true;
 let result = document.querySelector('.results');
 let scores = document.querySelector('.scores');
 let aliensClear = [];
@@ -14,6 +13,39 @@ let game = false, gameOver = false;
 let highScores = new Array(10);
 
 highScores.fill(0,0);
+
+let td;
+let table = document.querySelector('.scores');
+
+const createNode = (node, parent)=>{
+    let n = document.createElement(node);
+    parent.appendChild(n);
+    return n;
+}
+
+const createHighScores = ()=>{
+    for(let i=0;i<highScores.length;i++){
+        tr = createNode('tr', table);
+        td = createNode('td', tr);
+        td.textContent=i+1+".  "+highScores[i];
+        td.classList.add('score'+i)
+    }
+}
+
+createHighScores();
+
+const fillHighScores = ()=>{
+    for (let i = 0; i < highScores.length; i++) {
+        td=document.querySelector('.score'+i);
+        console.log(td);
+        td.textContent=i+1+".  "+highScores[i];   
+        console.log(td.textContent);
+
+    }
+}
+const createElement = (element)=>{
+    document.createElement(element);
+}
 
 const addClass = (position, className) => {
     squares[position].classList.add(className);
@@ -27,12 +59,6 @@ for (let i = 0; i < 600; i++) {
     const square = document.createElement('div');
     grid.appendChild(square);
 }
-
-/* const alienInvaders = [
-    0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-    15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
-    30, 31, 32, 33, 34, 35, 36, 37, 38, 39
-]; */
 
 let alienInvaders = [
     10, 11, 12, 13, 14, 15
@@ -57,7 +83,6 @@ const drawInvaders = () => {
             addClass(alienInvaders[i], 'invader');
         }
     }
-
 }
 
 const clearInvaders = () => {
@@ -105,26 +130,6 @@ const moveInvaders = () => {
     const right = alienInvaders[alienInvaders.length - 1] % width === width - 1
     clearInvaders();
 
-    /* if (right && moveRight) {
-        for (let i = 0; i < alienInvaders.length; i++) {
-            alienInvaders[i] += width + 1;
-            direction = -1;
-            moveRight = false;
-        }
-    }
-
-    if (left && !moveRight) {
-        for (let i = 0; i < alienInvaders.length; i++) {
-            alienInvaders[i] += width - 1;
-            direction = 1;
-            moveRight = true;
-        }
-    }
-
-    for (let i = 0; i < alienInvaders.length; i++) {
-        alienInvaders[i] += direction;
-    } */
-
     if (game) {
         for (let i = 0; i < alienInvaders.length; i++) {
             alienInvaders[i] += width;
@@ -133,23 +138,14 @@ const moveInvaders = () => {
 
     drawInvaders();
 
-    
     ship.forEach(element => {
-        if (squares[currentShipPosition+element].classList.contains('invader', 'ship')) {
-            result.innerHTML = 'game over';
-            clearInterval(invadersId);
-            gameOver = true;
+        if (squares[currentShipPosition+element].classList.contains('invader', 'ship')) {      
             restartGame();
         }
     });
     
-    
-
     for (let i = 0; i < alienInvaders.length; i++) {
         if (alienInvaders[i] >= squares.length - width) {
-            result.innerHTML = 'game over';
-            clearInterval(invadersId);
-            gameOver = true;
             restartGame();
         }
     }
@@ -157,9 +153,7 @@ const moveInvaders = () => {
     if (aliensClear.length == alienInvaders.length) {
         level++
         gameOver=true;
-        //result.innerHTML = 'win'
         clearInterval(invadersId)
-        console.log(aliensClear)
         nextRound()
     }
 
@@ -242,10 +236,15 @@ const nextRound = () => {
 
 
 const restartGame = ()=>{
+    result.innerHTML = 'game over';
+    clearInterval(invadersId);
+    gameOver = true;
+
     highScores.unshift(score);
     highScores.sort((a,b)=>b-a);
     highScores.pop();
-    scores.innerHTML=highScores;
+
+    fillHighScores();
  
     aliensClear = [];
     clearInvaders();
@@ -255,7 +254,7 @@ const restartGame = ()=>{
     drawInvaders();
 
     clearBullets();
-    
+
     clearShip();
     currentShipPosition=524;
     drawShip();
