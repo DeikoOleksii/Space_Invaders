@@ -1,0 +1,30 @@
+{
+  "name": "space_invaders",
+  "version": "1.0.0",
+  "description": "Space Invaders game",
+  "main": "app.js",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^7.27.0",
+    "eslint-config-google": "^0.14.0",
+    "prettier": "2.3.0"
+  },
+  "scripts": {
+    "lint": "eslint --fix app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DeikoOleksii/Space_Invaders.git"
+  },
+  "keywords": [
+    "coursework",
+    "game",
+    "spaceinvaders"
+  ],
+  "author": "Deiko Oleksii",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DeikoOleksii/Space_Invaders/issues"
+  },
+  "homepage": "https://github.com/DeikoOleksii/Space_Invaders#readme"
+}
