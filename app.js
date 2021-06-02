@@ -1,24 +1,33 @@
 'use strict';
-const grid = document.querySelector('.grid');
-const StartShipPosition = 700;
-let currentShipPosition = StartShipPosition;
-const width = 40;
+const GRID = document.querySelector('.grid');
+const RESULT = document.querySelector('.results');
+const TABLE = document.querySelector('.scores');
+
+const START_SHIP_POSITION = 700;
+const SQUARES_NUMBER = 800;
+const WIDTH = 40;
+const INTS = {
+  INVADER: 1000,
+  D: 100,
+  COLLISION: 300,
+  BULLET: 50
+};
+const HIGH_SCORES = new Array(10);
+
+let currentShipPosition = START_SHIP_POSITION;
 let invadersId;
-const result = document.querySelector('.results');
 let aliensClear = [];
 let score = 0;
 let level = 1;
 let bullets = [];
 let game = false,
   gameOver = false;
-const highScores = new Array(10);
 let pause = false;
 
-highScores.fill(0, 0);
+HIGH_SCORES.fill(0, 0);
 
 let td;
 let tr;
-const table = document.querySelector('.scores');
 
 const createNode = (node, parent) => {
   const n = document.createElement(node);
@@ -27,10 +36,10 @@ const createNode = (node, parent) => {
 };
 
 const createHighScores = () => {
-  for (let i = 0; i < highScores.length; i++) {
-    tr = createNode('tr', table);
+  for (let i = 0; i < HIGH_SCORES.length; i++) {
+    tr = createNode('tr', TABLE);
     td = createNode('td', tr);
-    td.textContent = i + 1 + '.  ' + highScores[i];
+    td.textContent = i + 1 + '.  ' + HIGH_SCORES[i];
     td.classList.add('score' + i);
   }
 };
@@ -38,27 +47,28 @@ const createHighScores = () => {
 createHighScores();
 
 const fillHighScores = () => {
-  for (let i = 0; i < highScores.length; i++) {
+  for (let i = 0; i < HIGH_SCORES.length; i++) {
     td = document.querySelector('.score' + i);
     console.log(td);
-    td.textContent = i + 1 + '.  ' + highScores[i];
+    td.textContent = i + 1 + '.  ' + HIGH_SCORES[i];
     console.log(td.textContent);
   }
 };
-const squares = Array.from(document.querySelectorAll('.grid div'));
+
+for (let i = 0; i < SQUARES_NUMBER; i++) {
+  const SQUARE = document.createElement('div');
+  GRID.appendChild(SQUARE);
+}
+
+const SQUARES = Array.from(document.querySelectorAll('.grid div'));
 
 const addClass = (position, className) => {
-  squares[position].classList.add(className);
+  SQUARES[position].classList.add(className);
 };
 
 const removeClass = (position, className) => {
-  squares[position].classList.remove(className);
+  SQUARES[position].classList.remove(className);
 };
-
-for (let i = 0; i < 800; i++) {
-  const square = document.createElement('div');
-  grid.appendChild(square);
-}
 
 let alienInvaders = [10, 11, 12, 13, 14, 15];
 
@@ -80,21 +90,21 @@ const drawInvaders = () => {
 };
 
 const clearInvaders = () => {
-  alienInvaders.forEach(element => {
+  for (const element of alienInvaders) {
     removeClass(element, 'invader');
-  });
+  }
 };
 
 const drawShip = () => {
-  ship.forEach(element => {
+  for (const element of ship) {
     addClass(element + currentShipPosition, 'ship');
-  });
+  }
 };
 
 const clearShip = () => {
-  ship.forEach(element => {
+  for (const element of ship) {
     removeClass(element + currentShipPosition, 'ship');
-  });
+  }
 };
 
 drawInvaders();
@@ -104,14 +114,11 @@ drawShip();
 const moveShip = e => {
   if (game && !gameOver) {
     clearShip();
-    switch (e.key) {
-    case 'ArrowLeft':
-      if ((currentShipPosition - 1) % width !== 0) currentShipPosition--;
-      break;
-    case 'ArrowRight':
-      if ((currentShipPosition + 1) % width < width - 1)
+    if (e.key === 'ArrowLeft') {
+      if ((currentShipPosition - 1) % WIDTH !== 0) currentShipPosition--;
+    } else if (e.key === 'ArrowRight') {
+      if ((currentShipPosition + 1) % WIDTH < WIDTH - 1)
         currentShipPosition++;
-      break;
     }
     drawShip();
   }
@@ -120,12 +127,12 @@ const moveShip = e => {
 document.addEventListener('keydown', moveShip);
 
 const clearBullets = () => {
-  bullets.forEach(element => {
+  for (const element of bullets) {
     clearInterval(element);
-  });
+  }
 
-  for (let i = 0; i < 800; i++) {
-    if (squares[i].classList.contains('bullet')) removeClass(i, 'bullet');
+  for (let i = 0; i < SQUARES_NUMBER; i++) {
+    if (SQUARES[i].classList.contains('bullet')) removeClass(i, 'bullet');
   }
 
   bullets = [];
@@ -136,18 +143,17 @@ const moveInvaders = () => {
     clearInvaders();
 
     for (let i = 0; i < alienInvaders.length; i++) {
-      alienInvaders[i] += width;
+      alienInvaders[i] += WIDTH;
     }
-
     drawInvaders();
 
     const restartGame = () => {
-      result.innerHTML = 'game over';
+      RESULT.innerHTML = 'game over';
       gameOver = true;
 
-      highScores.unshift(score);
-      highScores.sort((a, b) => b - a);
-      highScores.pop();
+      HIGH_SCORES.unshift(score);
+      HIGH_SCORES.sort((a, b) => b - a);
+      HIGH_SCORES.pop();
 
       fillHighScores();
       pause = true;
@@ -165,7 +171,7 @@ const moveInvaders = () => {
           clearBullets();
 
           clearShip();
-          currentShipPosition = StartShipPosition;
+          currentShipPosition = START_SHIP_POSITION;
           drawShip();
 
           game = false;
@@ -182,22 +188,25 @@ const moveInvaders = () => {
       level = 1;
       score = 0;
 
-      invadersId = setInterval(moveInvaders, 1000 - 100 * (level - 1));
+      invadersId = setInterval(
+        moveInvaders,
+        INTS.INVADER - INTS.D * (level - 1)
+      );
     };
 
-    ship.forEach(element => {
+    for (const element of ship) {
       if (
-        squares[currentShipPosition + element].classList.contains(
+        SQUARES[currentShipPosition + element].classList.contains(
           'invader',
           'ship'
         )
       ) {
         restartGame();
       }
-    });
+    }
 
     for (let i = 0; i < alienInvaders.length; i++) {
-      if (alienInvaders[i] >= squares.length - width) {
+      if (alienInvaders[i] >= SQUARES.length - WIDTH) {
         console.log(alienInvaders[i]);
         restartGame();
       }
@@ -209,7 +218,10 @@ const moveInvaders = () => {
       drawInvaders();
       game = false;
       gameOver = false;
-      invadersId = setInterval(moveInvaders, 1000 - 100 * (level - 1));
+      invadersId = setInterval(
+        moveInvaders,
+        INTS.INVADER - INTS.D * (level - 1)
+      );
     };
 
     if (aliensClear.length === alienInvaders.length) {
@@ -221,19 +233,22 @@ const moveInvaders = () => {
   }
 };
 
-invadersId = setInterval(moveInvaders, /*1000 - (100 * (level - 1))*/ 200);
+invadersId = setInterval(
+  moveInvaders,
+  INTS.INVADER - INTS.D * (level - 1)
+);
 
 const shoot = e => {
   let bulletId;
   let currentBulletPosition = currentShipPosition;
   const bullet = () => {
-    if (currentBulletPosition < width) {
+    if (currentBulletPosition < WIDTH) {
       removeClass(currentBulletPosition, 'bullet');
       clearInterval(bulletId);
     }
-    if (currentBulletPosition >= width) {
+    if (currentBulletPosition >= WIDTH) {
       removeClass(currentBulletPosition, 'bullet');
-      currentBulletPosition -= width;
+      currentBulletPosition -= WIDTH;
       addClass(currentBulletPosition, 'bullet');
     }
 
@@ -241,25 +256,25 @@ const shoot = e => {
       removeClass(currentBulletPosition, 'collision');
     };
 
-    if (squares[currentBulletPosition].classList.contains('invader')) {
+    if (SQUARES[currentBulletPosition].classList.contains('invader')) {
       removeClass(currentBulletPosition, 'bullet');
       removeClass(currentBulletPosition, 'invader');
       addClass(currentBulletPosition, 'collision');
 
-      setTimeout(clearCollision, 300);
+      setTimeout(clearCollision, INTS.COLLISION);
       clearInterval(bulletId);
 
       const alienDead = alienInvaders.indexOf(currentBulletPosition);
       aliensClear.push(alienDead);
       score++;
-      result.innerHTML = score;
+      RESULT.innerHTML = score;
+      console.log(score);
     }
   };
 
-  switch (e.key) {
-  case ' ':
+  if (e.key === ' ') {
     if (game && !gameOver) {
-      bulletId = setInterval(bullet, 50);
+      bulletId = setInterval(bullet, INTS.BULLET);
       bullets.push(bulletId);
     }
   }
