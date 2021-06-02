@@ -1,0 +1,43 @@
+.grid{
+    width:600px;
+    height:400px;
+    border:solid black 1px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.grid div{
+    width:20px;
+    height:20px;
+}
+
+.scores{
+    position:absolute;
+    left:700px;
+    top: 74px;
+}
+
+.h{
+    position: absolute;
+    left: 700px;
+    top:0;
+}
+
+.invader{
+    background-color: blue;
+    border-radius: 10px;
+}
+
+.ship{
+    background-color: green;
+}
+
+.bullet{
+    background-color: orange;
+    border-radius: 10px;
+}
+
+.collision{
+    background-color: red;
+    border-radius: 10px;
+}
