@@ -1,6 +1,6 @@
-import { addClass, removeClass } from "./utils.js";
-import { state } from "./game.js";
-import { WIDTH, INTS } from "./config.js";
+import { addClass, removeClass } from './utils.js';
+import { state } from './game.js';
+import { WIDTH, INTS } from './config.js';
 
 let alienInvaders = [17, 18, 19, 20, 21, 22];
 let aliensClear = [];
@@ -9,14 +9,14 @@ let invadersId;
 const drawInvaders = () => {
   for (let i = 0; i < alienInvaders.length; i++) {
     if (!aliensClear.includes(i)) {
-      addClass(alienInvaders[i], "invader");
+      addClass(alienInvaders[i], 'invader');
     }
   }
 };
 
 const clearInvaders = () => {
   for (const element of alienInvaders) {
-    removeClass(element, "invader");
+    removeClass(element, 'invader');
   }
 };
 
@@ -31,11 +31,6 @@ const moveInvaders = () => {
   }
 };
 
-invadersId = setInterval(
-  moveInvaders,
-  INTS.INVADER - INTS.D * (state.level - 1)
-);
-
 const restartInvaders = () => {
   aliensClear = [];
   clearInvaders();
@@ -49,6 +44,11 @@ const restartInvId = () => {
     INTS.INVADER - INTS.D * (state.level - 1)
   );
 };
+
+invadersId = setInterval(
+  moveInvaders,
+  INTS.INVADER - INTS.D * (state.level - 1)
+);
 
 export {
   drawInvaders,

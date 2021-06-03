@@ -1,4 +1,4 @@
-let state = {
+const state = {
   score: 0,
   level: 1,
   game: false,
@@ -6,7 +6,7 @@ let state = {
   pause: false,
 };
 
-const startGame = (e) => {
+const startGame = e => {
   if (e.key) state.game = true;
 };
 

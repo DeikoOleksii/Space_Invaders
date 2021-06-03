@@ -1,8 +1,8 @@
-import { RESULT, INTS, WIDTH, SQUARES_NUMBER } from "./config.js";
-import { SQUARES, addClass, removeClass } from "./utils.js";
-import { state } from "./game.js";
-import { currentShipPosition } from "./ship.js";
-import { alienInvaders, aliensClear } from "./invaders.js";
+import { RESULT, INTS, WIDTH, SQUARES_NUMBER } from './config.js';
+import { SQUARES, addClass, removeClass } from './utils.js';
+import { state } from './game.js';
+import { currentShipPosition } from './ship.js';
+import { alienInvaders, aliensClear } from './invaders.js';
 
 let bullets = [];
 
@@ -12,34 +12,34 @@ const clearBullets = () => {
   }
 
   for (let i = 0; i < SQUARES_NUMBER; i++) {
-    if (SQUARES[i].classList.contains("bullet")) removeClass(i, "bullet");
+    if (SQUARES[i].classList.contains('bullet')) removeClass(i, 'bullet');
   }
 
   bullets = [];
 };
 
-const shoot = (e) => {
+const shoot = e => {
   let bulletId;
   let currentBulletPosition = currentShipPosition;
   const bullet = () => {
     if (currentBulletPosition < WIDTH) {
-      removeClass(currentBulletPosition, "bullet");
+      removeClass(currentBulletPosition, 'bullet');
       clearInterval(bulletId);
     }
     if (currentBulletPosition >= WIDTH) {
-      removeClass(currentBulletPosition, "bullet");
+      removeClass(currentBulletPosition, 'bullet');
       currentBulletPosition -= WIDTH;
-      addClass(currentBulletPosition, "bullet");
+      addClass(currentBulletPosition, 'bullet');
     }
 
     const clearCollision = () => {
-      removeClass(currentBulletPosition, "collision");
+      removeClass(currentBulletPosition, 'collision');
     };
 
-    if (SQUARES[currentBulletPosition].classList.contains("invader")) {
-      removeClass(currentBulletPosition, "bullet");
-      removeClass(currentBulletPosition, "invader");
-      addClass(currentBulletPosition, "collision");
+    if (SQUARES[currentBulletPosition].classList.contains('invader')) {
+      removeClass(currentBulletPosition, 'bullet');
+      removeClass(currentBulletPosition, 'invader');
+      addClass(currentBulletPosition, 'collision');
 
       setTimeout(clearCollision, INTS.COLLISION);
       clearInterval(bulletId);
@@ -51,7 +51,7 @@ const shoot = (e) => {
     }
   };
 
-  if (e.key === " ") {
+  if (e.key === ' ') {
     if (state.game && !state.gameOver) {
       bulletId = setInterval(bullet, INTS.BULLET);
       bullets.push(bulletId);

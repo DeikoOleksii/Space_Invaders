@@ -1,6 +1,6 @@
-const GRID = document.querySelector(".grid");
-const RESULT = document.querySelector(".results");
-const TABLE = document.querySelector(".scores");
+const GRID = document.querySelector('.grid');
+const RESULT = document.querySelector('.results');
+const TABLE = document.querySelector('.scores');
 
 const START_SHIP_POSITION = 700;
 const SQUARES_NUMBER = 800;
