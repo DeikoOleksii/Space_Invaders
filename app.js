@@ -25,8 +25,8 @@ import { shoot, clearBullets } from './modules/shooting.js';
 
 import {
   createHighScores,
-  HIGH_SCORES,
   fillHighScores,
+  refreshHighScores
 } from './modules/high_scores.js';
 
 createHighScores();
@@ -39,44 +39,48 @@ document.addEventListener('keydown', startGame);
 
 document.addEventListener('keydown', moveShip);
 
+const restartGame = () => {
+  RESULT.innerHTML = 'Game over';
+  state.gameOver = true;
+
+  refreshHighScores();
+  fillHighScores();
+
+  state.pause = true;
+
+  clearInterval(invadersId);
+
+  const restart = e => {
+    if (e.key && state.pause) {
+      restartInvaders();
+      clearBullets();
+      clearShip();
+      restartShip();
+      drawShip();
+      state.game = false;
+      state.pause = false;
+    }
+  };
+
+  document.addEventListener('keydown', restart);
+
+  state.game = false;
+  state.gameOver = false;
+  state.level = 1;
+  state.score = 0;
+  restartInvId();
+};
+
+const nextRound = () => {
+  restartInvId();
+  restartInvaders();
+  clearBullets();
+  state.game = false;
+  state.gameOver = false;
+};
+
 const restarting = () => {
   if (state.game) {
-    const restartGame = () => {
-      RESULT.innerHTML = 'Game over';
-      state.gameOver = true;
-
-      HIGH_SCORES.unshift(state.score);
-      HIGH_SCORES.sort((a, b) => b - a);
-      HIGH_SCORES.pop();
-
-      fillHighScores();
-      state.pause = true;
-
-      clearInterval(invadersId);
-
-      const restart = e => {
-        if (e.key && state.pause) {
-          restartInvaders();
-          clearBullets();
-          clearShip();
-          restartShip();
-          drawShip();
-
-          state.game = false;
-          state.pause = false;
-        }
-      };
-
-      document.addEventListener('keydown', restart);
-
-      state.game = false;
-      state.gameOver = false;
-      state.level = 1;
-      state.score = 0;
-
-      restartInvId();
-    };
-
     for (const element of ship) {
       if (
         SQUARES[currentShipPosition + element].classList.contains(
@@ -88,19 +92,11 @@ const restarting = () => {
       }
     }
 
-    for (let i = 0; i < alienInvaders.length; i++) {
-      if (alienInvaders[i] >= SQUARES.length - WIDTH) {
-        console.log(alienInvaders[i]);
+    for (const element of alienInvaders) {
+      if (element >= SQUARES.length - WIDTH) {
         restartGame();
       }
     }
-    const nextRound = () => {
-      restartInvId();
-      restartInvaders();
-      clearBullets();
-      state.game = false;
-      state.gameOver = false;
-    };
 
     if (aliensClear.length === alienInvaders.length) {
       state.level++;
