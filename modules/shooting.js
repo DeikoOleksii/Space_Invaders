@@ -1,13 +1,9 @@
-import { RESULT, INTS, WIDTH, SQUARES_NUMBER } from './config.js';
+import { RESULT, INTERVALS, WIDTH, SQUARES_NUMBER } from './config.js';
 import { SQUARES, addClass, removeClass } from './utils.js';
 import { state } from './game.js';
-import { currentShipPosition } from './ship.js';
-import { alienInvaders, aliensClear } from './invaders.js';
-
-let bullets = [];
 
 const clearBullets = () => {
-  for (const element of bullets) {
+  for (const element of state.bullets) {
     clearInterval(element);
   }
 
@@ -15,12 +11,12 @@ const clearBullets = () => {
     if (SQUARES[i].classList.contains('bullet')) removeClass(i, 'bullet');
   }
 
-  bullets = [];
+  state.bullets = [];
 };
 
 const shoot = e => {
   let bulletId;
-  let currentBulletPosition = currentShipPosition;
+  let currentBulletPosition = state.currentShipPosition;
   const bullet = () => {
     if (currentBulletPosition < WIDTH) {
       removeClass(currentBulletPosition, 'bullet');
@@ -41,11 +37,11 @@ const shoot = e => {
       removeClass(currentBulletPosition, 'invader');
       addClass(currentBulletPosition, 'collision');
 
-      setTimeout(clearCollision, INTS.COLLISION);
+      setTimeout(clearCollision, INTERVALS.COLLISION);
       clearInterval(bulletId);
 
-      const alienDead = alienInvaders.indexOf(currentBulletPosition);
-      aliensClear.push(alienDead);
+      const alienDead = state.alienInvaders.indexOf(currentBulletPosition);
+      state.aliensClear.push(alienDead);
       state.score++;
       RESULT.innerHTML = state.score;
     }
@@ -53,8 +49,8 @@ const shoot = e => {
 
   if (e.key === ' ') {
     if (state.game && !state.gameOver) {
-      bulletId = setInterval(bullet, INTS.BULLET);
-      bullets.push(bulletId);
+      bulletId = setInterval(bullet, INTERVALS.BULLET);
+      state.bullets.push(bulletId);
     }
   }
 };

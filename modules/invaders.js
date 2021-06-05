@@ -1,21 +1,17 @@
 import { addClass, removeClass } from './utils.js';
 import { state } from './game.js';
-import { WIDTH, INTS } from './config.js';
-
-let alienInvaders = [17, 18, 19, 20, 21, 22];
-let aliensClear = [];
-let invadersId;
+import { WIDTH, INTERVALS, RESTART_ALIEN_INVADERS } from './config.js';
 
 const drawInvaders = () => {
-  for (let i = 0; i < alienInvaders.length; i++) {
-    if (!aliensClear.includes(i)) {
-      addClass(alienInvaders[i], 'invader');
+  for (let i = 0; i < state.alienInvaders.length; i++) {
+    if (!state.aliensClear.includes(i)) {
+      addClass(state.alienInvaders[i], 'invader');
     }
   }
 };
 
 const clearInvaders = () => {
-  for (const element of alienInvaders) {
+  for (const element of state.alienInvaders) {
     removeClass(element, 'invader');
   }
 };
@@ -24,39 +20,38 @@ const moveInvaders = () => {
   if (state.game) {
     clearInvaders();
 
-    for (let i = 0; i < alienInvaders.length; i++) {
-      alienInvaders[i] += WIDTH;
+    for (let i = 0; i < state.alienInvaders.length; i++) {
+      state.alienInvaders[i] += WIDTH;
     }
     drawInvaders();
   }
 };
 
 const restartInvaders = () => {
-  aliensClear = [];
+  state.aliensClear = [];
   clearInvaders();
-  alienInvaders = [17, 18, 19, 20, 21, 22];
+  for (let i = 0; i < state.alienInvaders.length; i++) {
+    state.alienInvaders[i] = RESTART_ALIEN_INVADERS[i];
+  }
   drawInvaders();
 };
 
 const restartInvId = () => {
-  invadersId = setInterval(
+  state.invadersId = setInterval(
     moveInvaders,
-    INTS.INVADER - INTS.D * (state.level - 1)
+    INTERVALS.INVADER - INTERVALS.D * (state.level - 1)
   );
 };
 
-invadersId = setInterval(
+state.invadersId = setInterval(
   moveInvaders,
-  INTS.INVADER - INTS.D * (state.level - 1)
+  INTERVALS.INVADER - INTERVALS.D * (state.level - 1)
 );
 
 export {
   drawInvaders,
   clearInvaders,
   moveInvaders,
-  alienInvaders,
-  aliensClear,
-  invadersId,
   restartInvaders,
   restartInvId,
 };

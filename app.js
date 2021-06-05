@@ -1,13 +1,8 @@
-
-
-import { RESULT, WIDTH } from './modules/config.js';
+import { INTERVALS, RESULT, WIDTH, SHIP } from './modules/config.js';
 import { SQUARES } from './modules/utils.js';
 import { startGame, state } from './modules/game.js';
 import {
   drawInvaders,
-  alienInvaders,
-  aliensClear,
-  invadersId,
   restartInvaders,
   restartInvId,
 } from './modules/invaders.js';
@@ -16,8 +11,6 @@ import {
   drawShip,
   clearShip,
   moveShip,
-  ship,
-  currentShipPosition,
   restartShip,
 } from './modules/ship.js';
 
@@ -48,7 +41,7 @@ const restartGame = () => {
 
   state.pause = true;
 
-  clearInterval(invadersId);
+  clearInterval(state.invadersId);
 
   const restart = e => {
     if (e.key && state.pause) {
@@ -81,9 +74,9 @@ const nextRound = () => {
 
 const restarting = () => {
   if (state.game) {
-    for (const element of ship) {
+    for (const element of SHIP) {
       if (
-        SQUARES[currentShipPosition + element].classList.contains(
+        SQUARES[state.currentShipPosition + element].classList.contains(
           'invader',
           'ship'
         )
@@ -92,21 +85,21 @@ const restarting = () => {
       }
     }
 
-    for (const element of alienInvaders) {
+    for (const element of state.alienInvaders) {
       if (element >= SQUARES.length - WIDTH) {
         restartGame();
       }
     }
 
-    if (aliensClear.length === alienInvaders.length) {
+    if (state.aliensClear.length === state.alienInvaders.length) {
       state.level++;
       state.gameOver = true;
-      clearInterval(invadersId);
+      clearInterval(state.invadersId);
       nextRound();
     }
   }
 };
 
-setInterval(restarting, 10);
+setInterval(restarting, INTERVALS.RESTARTING);
 
 document.addEventListener('keyup', shoot);
